@@ -34,15 +34,16 @@ def downloader(queue):
         readline(sock)
         tweetjson = json.loads(tweetraw)
         try:
-            if not tweetjson[u"lang"] == u"en":
-                continue
+            if tweetjson[u"delete"]: continue
         except:
+            pass
+        if not tweetjson[u"user"][u"lang"] == u"en":
             continue
         try:
             tweet.body = tweetjson[u"text"]
         except:
             continue
-        print tweet.body
+        queue.put(tweet)
     sock.close()
 
 queue = Queue()
