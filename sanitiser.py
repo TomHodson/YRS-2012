@@ -1,6 +1,6 @@
 import re
 import string
-def cleanupfunction(inqueue, outqueue):
+def sanitiser(inqueue, outqueue):
     tweetobj = inqueue.get(True)
     tweet = tweetobj.body
     tweet = tweet.translate(string.maketrans("","",),"(){}[]")
@@ -9,7 +9,3 @@ def cleanupfunction(inqueue, outqueue):
     tweet = re.sub(" +"," ",tweet)
     tweetobj.body = tweet
     outqueue.put(tweet)
-
-
-
-cleanupfunction("ICT baan Amsterdam: Business Analist/Architect - (BI, processen, analyse, architectuur ) - Amsterdam http://bit.ly/R9UAOl #ict #vacature")    

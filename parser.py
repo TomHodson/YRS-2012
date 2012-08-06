@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-def parser(tweet):
+def parser(tweet,outqueue):
     body = tweet.body.split()
     single = defaultdict(int)
     for word in body:
@@ -8,6 +8,6 @@ def parser(tweet):
     double = defaultdict(int)
     for i in range(len(body)-2):
         double[tuple(body[i:i+2])] += 1
-    tweet.single = single
-    tweet.double = double
+    tweet.single = dict(single)
+    tweet.double = dict(double)
     outqueue.put(tweet)
