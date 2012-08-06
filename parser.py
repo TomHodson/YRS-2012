@@ -9,7 +9,10 @@ def parser(inqueue,outqueue):
             single[word] += 1
         double = defaultdict(int)
         for i in range(len(body)-2): #get count of word pairs
-            double[tuple(body[i:i+2])] += 1
+            pair = body[i:i+2]
+            pair.sort()
+            pair = tuple(pair)
+            double[pair] += 1
         tweet.single = dict(single)
         tweet.double = dict(double)
         outqueue.put(tweet) #output to new queue

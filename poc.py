@@ -23,6 +23,4 @@ sanitisert.start()
 parsert = Process(target = parser, args=(fromSanitiserQueue,fromParserQueue))
 parsert.start()
 
-#while True:
-#    print fromParserQueue.get(True).single
 merger(fromParserQueue,fromMergerQueue)
