@@ -32,7 +32,7 @@ def intweetparser(inputqueue, outputqueue):
         wordpairs = combinations(tweet.body, 2) #(word1, word2) where word1 != word2 and order does NOT matter
         for wordpair in wordpairs:
             doubles[wordpair] += 1
-        tweet.single, tweet.double = singles, doubles
+        tweet.single, tweet.double = dict(singles), dict(doubles)
         outputqueue.put(tweet)
 
 parser = consecutiveparser
@@ -54,7 +54,8 @@ if __name__ == '__main__':
     p.start()
     time.sleep(0.5) #DIRTY HACK
     p.terminate()
-    print 'consecutiveparser:', outputqueue.get().double
+    out = outputqueue.get()
+    print 'consecutiveparser:', out.single, out.double 
 
     inputqueue = Queue()
     inputqueue.put(testtweet)
@@ -64,4 +65,5 @@ if __name__ == '__main__':
     p.start()
     time.sleep(0.5) #DIRTY HACK
     p.terminate()
-    print 'intweetparser:', outputqueue.get().double
+    out = outputqueue.get()
+    print 'intweetparser:', out.single, out.double
