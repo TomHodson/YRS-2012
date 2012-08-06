@@ -9,7 +9,7 @@ sanitiser
 --------
 removes punctuation, email addresses and links from the Tweet.body
 
-parse
+parser
 --------
 creates counts for individual and pairs of words and adds to Tweet.single/Tweet.double
 
