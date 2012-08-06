@@ -10,3 +10,7 @@ def merger(inqueue,outqueue):
         singles = dict(sum((Counter(dict(x)) for x in singles),Counter()))
         doubles = dict(sum((Counter(dict(x)) for x in doubles),Counter()))
         outqueue.put((singles,doubles))
+
+if __name__ == '__main__':
+	pass
+	

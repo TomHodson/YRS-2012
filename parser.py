@@ -23,16 +23,17 @@ from itertools import combinations
 def intweetparser(inputqueue, outputqueue):
     while True:
         tweet  = inputqueue.get(block = True)
-        singles = Counter()
-        doubles = Counter()
+        words = sorted(tweet.body)
+        tweet.single = Counter()
+        tweet.double = Counter()
         
-        for word in tweet.body:
-            singles[word] += 1
+        for word in words:
+            tweet.single[word] += 1
 
-        wordpairs = combinations(tweet.body, 2) #(word1, word2) where word1 != word2 and order does NOT matter
-        for wordpair in wordpairs:
-            doubles[wordpair] += 1
-        tweet.single, tweet.double = dict(singles), dict(doubles)
+        wordpairs = combinations(words, 2) #(word1, word2) where word1 != word2 and order does NOT matter
+        def f(x): tweet.double[x] += 1
+        map(f, wordpairs)
+        tweet.single, tweet.double = dict(tweet.single), dict(tweet.double)
         outputqueue.put(tweet)
 
 parser = consecutiveparser
@@ -45,7 +46,7 @@ if __name__ == '__main__':
         def __init__(self):
                 pass
     testtweet = Tweet()
-    testtweet.body = ['this', 'is', 'a', 'test']
+    testtweet.body = ['this', 'is', 'a', 'test', 'blah', 'word', 'slajd']
     inputqueue = Queue()
     inputqueue.put(testtweet)
     outputqueue = Queue()
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     time.sleep(0.5) #DIRTY HACK
     p.terminate()
     out = outputqueue.get()
-    print 'consecutiveparser:', out.single, out.double 
+    print 'intweetparser: len={}, {}, {}'.format(len(out.double), out.single, out.double) 
 
     inputqueue = Queue()
     inputqueue.put(testtweet)
@@ -66,4 +67,4 @@ if __name__ == '__main__':
     time.sleep(0.5) #DIRTY HACK
     p.terminate()
     out = outputqueue.get()
-    print 'intweetparser:', out.single, out.double
+    print 'intweetparser: len={}, {}, {}'.format(len(out.double), out.single, out.double)
