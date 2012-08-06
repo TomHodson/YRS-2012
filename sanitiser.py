@@ -10,5 +10,5 @@ def sanitiser(inqueue, outqueue):
         #tweet = tweet.translate(string.maketrans("","",),string.punctuation)
         tweet = re.sub("[%s]" % string.punctuation, "",tweet)
         tweet = re.sub(" +"," ",tweet)
-        tweetobj.body = tweet
+        tweetobj.body = tweet.split()
         outqueue.put(tweetobj)

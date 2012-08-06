@@ -29,4 +29,4 @@ mergert = Process(target = merger, args=(fromParserQueue,fromMergerQueue))
 mergert.start()
 
 while True:
-    fromMergerQueue.get(True)
+    print fromMergerQueue.get(True)

@@ -3,7 +3,7 @@ from collections import defaultdict
 from itertools import combinations
 from Queue import Queue
 
-def DBinputer(inputqueue, outputqueue):
+def intweetparser(inputqueue, outputqueue):
 	tweetsperblock = 1
 	words = defaultdict(int)
 	wordwords = defaultdict(lambda : defaultdict(int))
