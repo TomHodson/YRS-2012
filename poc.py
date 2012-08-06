@@ -1,6 +1,7 @@
 from downloader import downloader
 from sanitiser import sanitiser
 from parser import parser
+from merger import merger
 from multiprocessing import Process,Queue,Pool
 
 def cleanup(signal,frame):
@@ -11,6 +12,7 @@ def cleanup(signal,frame):
 fromDownloadQueue = Queue()
 fromSanitiserQueue = Queue()
 fromParserQueue = Queue()
+fromMergerQueue = Queue()
 
 downloadert = Process(target = downloader, args=(fromDownloadQueue,))
 downloadert.start()
@@ -21,5 +23,6 @@ sanitisert.start()
 parsert = Process(target = parser, args=(fromSanitiserQueue,fromParserQueue))
 parsert.start()
 
-while True:
-    print fromParserQueue.get(True).single
+#while True:
+#    print fromParserQueue.get(True).single
+merger(fromParserQueue,fromMergerQueue)
