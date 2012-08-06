@@ -2,6 +2,10 @@ import base64
 import socket
 import ssl
 from multiprocessing import Queue
+import json
+
+class Tweet():
+    pass
 
 def readline(sock):
     tweet = ""
@@ -21,9 +25,25 @@ def downloader(queue):
     sock = ssl.wrap_socket(sock)
     sock.connect(("stream.twitter.com",443))
     sock.send(req)
+    for i in range(5):
+        readline(sock)
     while True:
-        print repr(readline(sock))
-        break
+        tweet = Tweet()
+        tweetraw = readline(sock)
+        readline(sock)
+        readline(sock)
+        tweetjson = json.loads(tweetraw)
+        try:
+            if not tweetjson[u"lang"] == u"en":
+                continue
+        except:
+            continue
+        try:
+            tweet.body = tweetjson[u"text"]
+        except:
+            continue
+        print tweet.body
     sock.close()
+
 queue = Queue()
 downloader(queue)   
