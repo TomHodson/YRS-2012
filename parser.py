@@ -1,14 +1,14 @@
-from collections import defaultdict
+from collections import Counter
 
 def consecutiveparser(inqueue,outqueue):
     while True: #forever
         tweet = inqueue.get(True) #read tweet object
         body = tweet.body #get tweet data
-        single = defaultdict(int)
+        single = Counter()
         for word in body: #get count of single words
             single[word] += 1
-        double = defaultdict(int)
-        for i in range(len(body)-2): #get count of word pairs
+        double = Counter()
+        for i in range(len(body)-1): #get count of word pairs
             pair = body[i:i+2]
             pair.sort()
             pair = tuple(pair)
@@ -17,30 +17,30 @@ def consecutiveparser(inqueue,outqueue):
         tweet.double = dict(double)
         outqueue.put(tweet) #output to new queue
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 from itertools import combinations
 
 def intweetparser(inputqueue, outputqueue):
     while True:
         tweet  = inputqueue.get(block = True)
-        words = defaultdict(int)
-        wordwords = {}
+        singles = Counter()
+        doubles = Counter()
+        
+        for word in tweet.body:
+            singles[word] += 1
 
         wordpairs = combinations(tweet.body, 2) #(word1, word2) where word1 != word2 and order does NOT matter
-        for word in tweet.body:
-            words[word] += 1
-
-        for word1,word2 in wordpairs:
-            wordwords.get(word1, defaultdict(int))[word2] += 1
-        tweet.single, tweet.double = words, wordwords
+        for wordpair in wordpairs:
+            doubles[wordpair] += 1
+        tweet.single, tweet.double = singles, doubles
         outputqueue.put(tweet)
 
 parser = consecutiveparser
 
-#doesn't work now that parser is an infinite loop
+#yay for testing
 if __name__ == '__main__':
-    from Queue import Queue
-    from multiprocessing import Process
+    import time
+    from multiprocessing import Process, Queue
     class Tweet():
         def __init__(self):
                 pass
@@ -49,3 +49,19 @@ if __name__ == '__main__':
     inputqueue = Queue()
     inputqueue.put(testtweet)
     outputqueue = Queue()
+
+    p = Process(target = consecutiveparser, args = (inputqueue, outputqueue))
+    p.start()
+    time.sleep(0.5) #DIRTY HACK
+    p.terminate()
+    print 'consecutiveparser:', outputqueue.get().double
+
+    inputqueue = Queue()
+    inputqueue.put(testtweet)
+    outputqueue = Queue()
+
+    p = Process(target = intweetparser, args = (inputqueue, outputqueue))
+    p.start()
+    time.sleep(0.5) #DIRTY HACK
+    p.terminate()
+    print 'intweetparser:', outputqueue.get().double
