@@ -1,11 +1,4 @@
-import downloader
-from multiprocessing import Process,Queue,Pool
 from collections import defaultdict
-
-inqueue = Queue()
-outqueue = Queue()
-p = Process(target = downloader.downloader, args=(inqueue,))
-p.start()
 
 def parser(tweet):
     body = tweet.body.split()
@@ -18,7 +11,3 @@ def parser(tweet):
     tweet.single = single
     tweet.double = double
     outqueue.put(tweet)
-
-parser(inqueue.get(True))
-#print outqueue.get(True)
-p.terminate()
