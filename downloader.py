@@ -45,6 +45,3 @@ def downloader(queue):
             continue
         queue.put(tweet)
     sock.close()
-
-queue = Queue()
-downloader(queue)   
