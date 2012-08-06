@@ -2,12 +2,14 @@ from downloader import downloader
 from sanitiser import sanitiser
 from parser import parser
 from merger import merger
-from multiprocessing import Process,Queue,Pool
+from multiprocessing import Process,Queue
+import signal
 
 def cleanup(signal,frame):
     downloadert.terminate()
     sanitisert.terminate()
     parsert.terminate()
+signal.signal(signal.SIGINT,cleanup)
 
 fromDownloadQueue = Queue()
 fromSanitiserQueue = Queue()
