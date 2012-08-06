@@ -3,6 +3,11 @@ from sanitiser import sanitiser
 from parser import parser
 from multiprocessing import Process,Queue,Pool
 
+def cleanup(signal,frame):
+    downloadert.terminate()
+    sanitisert.terminate()
+    parsert.terminate()
+
 fromDownloadQueue = Queue()
 fromSanitiserQueue = Queue()
 fromParserQueue = Queue()
