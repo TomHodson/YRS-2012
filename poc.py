@@ -1,11 +1,20 @@
 from downloader import downloader
+from sanitiser import sanitiser
 from parser import parser
 from multiprocessing import Process,Queue,Pool
 
-inqueue = Queue()
-outqueue = Queue()
-p = Process(target = downloader, args=(inqueue,))
-p.start()
+fromDownloadQueue = Queue()
+fromSanitiserQueue = Queue()
+fromParserQueue = Queue()
 
-parser(inqueue.get(True),outqueue)
-p.terminate()
+downloadert = Process(target = downloader, args=(fromDownloadQueue,))
+downloadert.start()
+
+sanitisert = Process(target = sanitiser, args=(fromDownloadQueue,fromSanitiserQueue))
+sanitisert.start()
+
+parsert = Process(target = parser, args=(fromSanitiserQueue,fromParserQueue))
+parsert.start()
+
+while True:
+    print fromParserQueue.get(True).single
