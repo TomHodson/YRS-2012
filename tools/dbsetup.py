@@ -2,7 +2,11 @@
 testrecords = True #whether to add some records for testing
 
 import sqlite3
-database = sqlite3.connect("minimaltest.db")
+database = sqlite3.connect("../data.db")
+
+database.execute("""CREATE TABLE
+ tweetsum(id INTEGER PRIMARY KEY,
+  count INTEGER NOT NULL);""")
 
 database.execute("""CREATE TABLE
  singles(id INTEGER PRIMARY KEY,

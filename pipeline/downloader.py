@@ -43,5 +43,4 @@ def downloader(queue,killproc):
         except:
             continue #if no text, move to next tweet
         queue.put(tweet) #add to end of queue
-    print "downloader out"
     sock.close()

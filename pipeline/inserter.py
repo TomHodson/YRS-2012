@@ -24,7 +24,7 @@ def inserter(inqueue,kill):
         #{"word":count}
         #.doubles
         #{("word1","word2"),(consecutive,intweet)}
-        database = sqlite3.connect("data.db")
+        database = sqlite3.connect("../data.db")
         cursor = database.cursor()
         for word in tweets.singles:
             query = "SELECT word FROM singles WHERE word == '%s' LIMIT 1" % word
@@ -70,3 +70,4 @@ def inserter(inqueue,kill):
                 pass
         cursor.execute("UPDATE tweetsum SET count = count + 100 WHERE id = 1")
         database.commit()
+        print "100 down"

@@ -1,6 +1,6 @@
 
 import sqlite3
-database = sqlite3.connect("minimaltest.db")
+database = sqlite3.connect("../data.db")
 database.row_factory = sqlite3.Row #wraps the tuples returned by cursor with a highly optimised and useful object
 cursor = database.cursor()	
 
@@ -26,7 +26,7 @@ def postprocess():
     #(singles table)     
 
     cursor.execute("SELECT singles.id, intweet, consecutive, count, prob FROM doubles INNER JOIN singles ON doubles.word1id == singles.id")
-    for record in cursor:
+    for record in cursor.fetchall():
         invcount = 1.0 / record['count']#'count' and 'prob' are coming from the word1 record in the singles table
         invprob = 1.0 /  record['prob']
 
@@ -36,13 +36,12 @@ def postprocess():
         consecprob = record['consecutive'] * invcount
         consecstrength = consecprob * invprob
 
-    	updatequery = """
-        UPDATE doubles
+    	updatequery = """UPDATE doubles
         SET intweetprob = {},
         intweetstrength = {},
-        consecprob =      {},
-        consecstrength =  {}
-        WHERE id == {}
+        consecprob = {},
+        consecstrength = {}
+        WHERE word1id == {}
         """.format(
             intweetprob,
             intweetstrength,
@@ -50,8 +49,9 @@ def postprocess():
             consecstrength,
             record['id']
         )
+        print updatequery
         cursor.execute(updatequery)
     database.commit()
 
 if __name__ == '__main__':
-    pass
+    postprocess()
