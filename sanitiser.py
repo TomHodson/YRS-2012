@@ -5,7 +5,6 @@ def sanitiser(inqueue, outqueue, kill):
         try:
             tweetobj = inqueue.get(True)
         except IOError:
-            print "sanitiser out"
             return
         tweet = tweetobj.raw
         tweet = re.sub("[(){}\[\]]","",tweet)

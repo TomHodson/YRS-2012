@@ -7,7 +7,6 @@ def merger(inqueue,outqueue,kill):
             try:
                 tweetcache.append(inqueue.get(True))
             except IOError:
-                print "merger out"
                 return
         singles = [i.single for i in tweetcache]
         doubles = [i.double for i in tweetcache]
