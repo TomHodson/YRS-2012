@@ -15,6 +15,7 @@ def consecutiveparser(inqueue,outqueue):
             double[pair] += 1
         tweet.single = dict(single)
         tweet.double = dict(double)
+        inqueue.task_done()
         outqueue.put(tweet) #output to new queue
 
 from collections import defaultdict, Counter

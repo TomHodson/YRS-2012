@@ -13,7 +13,7 @@ def readline(sock): #read single line (tweet) from socket
         tweet += sock.recv(1)
     return tweet
 
-def downloader(queue):
+def downloader(queue,killproc):
     user = "RoryMcNamara3"
     pwd = "YRS2012"
     sock = socket.socket()
@@ -27,7 +27,7 @@ def downloader(queue):
     sock.send(req) #send our request
     for i in range(5): #get rid of http response
         readline(sock)
-    while True: #begin reading tweets
+    while not killproc: #begin reading tweets
         tweet = Tweet()
         tweetraw = readline(sock) #tweet json data
         readline(sock) #size of next tweet

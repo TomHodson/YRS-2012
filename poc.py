@@ -2,21 +2,27 @@ from downloader import downloader
 from sanitiser import sanitiser
 from parser import parser
 from merger import merger
-from multiprocessing import Process,Queue
+from multiprocessing import Process,JoinableQueue,Value
 import signal
 
 def cleanup(signal,frame):
+    killProc = 1
+    fromDownloadQueue.join()
     downloadert.terminate()
+    fromSanitiserQueue.join()
     sanitisert.terminate()
-    parsert.terminate()
+    fromMergerQueue.join()
+    mergert.terminate()
+
 signal.signal(signal.SIGINT,cleanup)
 
-fromDownloadQueue = Queue()
-fromSanitiserQueue = Queue()
-fromParserQueue = Queue()
-fromMergerQueue = Queue()
+fromDownloadQueue = JoinableQueue()
+killProc = Value(0)
+fromSanitiserQueue = JoinableQueue()
+fromParserQueue = JoinableQueue()
+fromMergerQueue = JoinableQueue()
 
-downloadert = Process(target = downloader, args=(fromDownloadQueue,))
+downloadert = Process(target = downloader, args=(fromDownloadQueue,killProc))
 downloadert.start()
 
 sanitisert = Process(target = sanitiser, args=(fromDownloadQueue,fromSanitiserQueue))
