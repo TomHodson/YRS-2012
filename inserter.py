@@ -1,10 +1,11 @@
-#CREATE TABLE singles(id INTEGER PRIMARY KEY, word varchar(140) NOT NULL, count INTEGER NOT NULL);
+#CREATE TABLE singles(id INTEGER PRIMARY KEY, word varchar(140) UNIQUE NOT NULL ON CONFLICT REPLACE, count INTEGER NOT NULL, prob double);
+#CREATE TABLE doubles(id INTEGER PRIMARY KEY, word1id INTEGER NOT NULL, word2id INTEGER NOT NULL, intweet INTEGER NOT NULL, consecutive INTEGER NOT NULL, intweetprob double, consecprob double, intweetstrength double, consecstrength double);
+#CREATE TABLE tweetsum (id INTEGER PRIMARY KEY,count INTEGER);
+#INSERT INTO tweetsum VALUES(1,0);
 
 #SELECT word FROM singles WHERE word == '%s' LIMIT 1
 #   INSERT INTO singles (word,count) VALUES ('%s', %d)
 #   UPDATE singles SET count = count + %d WHERE word = '%s'
-
-#CREATE TABLE doubles(id INTEGER PRIMARY KEY, word1id INTEGER NOT NULL, word2id INTEGER NOT NULL, intweet INTEGER NOT NULL, consecutive INTEGER NOT NULL);
 
 #SELECT id FROM singles WHERE word == '%s' LIMIT 1 #word1id
 #SELECT id FROM singles WHERE word == '%s' LIMIT 1 #word2id
@@ -49,11 +50,23 @@ def inserter(inqueue,kill):
                 query = "INSERT INTO doubles (word1id,word2id,intweet,consecutive) VALUES (%d, %d, %d, %d)"
                 query = query % (word1id,word2id,intweet,consecutive)
             else:
-                query = "UPDATE doubles SET intweet = intweet + %d, consecutive = consecutive + %d WHERE word1id == %d AND WHERE word2id == %d"
-                query = query % (intweet,consecutive,word1id,word2id)
+                if not intweet:
+                    setintweet = ""
+                else:
+                    setintweet = "intweet = intweet + %d" % intweet
+                if not consecutive:
+                    setconsecutive = ""
+                else:
+                    setconsecutive = "consecutive = consecutive + %d" % consecutive
+                if setintweet and setconsecutive:
+                    doset = setintweet+","+setconsecutive
+                else:
+                    doset = setintweet if setintweet else setconsecutive
+                query = "UPDATE doubles SET %s WHERE word1id == %d AND word2id == %d"
+                query = query % (doset,word1id,word2id)
             try:
                 cursor.execute(query)
             except:
-                print query
+                pass
+        cursor.execute("UPDATE tweetsum SET count = count + 100 WHERE id = 1")
         database.commit()
-        print "set"
