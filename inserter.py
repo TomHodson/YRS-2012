@@ -1,10 +1,12 @@
-#CREATE TABLE singles(id INTEGER PRIMARY KEY, word varchar(140) NOT NULL, count INTEGER NOT NULL);
+#CREATE TABLE singles(id INTEGER PRIMARY KEY, word varchar(140) UNIQUE NOT NULL ON CONFLICT REPLACE, count INTEGER NOT NULL);
+#CREATE TABLE doubles(id INTEGER PRIMARY KEY, word1id INTEGER NOT NULL, word2id INTEGER NOT NULL, intweet INTEGER NOT NULL, consecutive INTEGER NOT NULL);
+#CREATE TABLE tweetsum (id INTEGER PRIMARY KEY,count INTEGER);
+#INSERT INTO tweetsum VALUES(1,0);
+
 
 #SELECT word FROM singles WHERE word == '%s' LIMIT 1
 #   INSERT INTO singles (word,count) VALUES ('%s', %d)
 #   UPDATE singles SET count = count + %d WHERE word = '%s'
-
-#CREATE TABLE doubles(id INTEGER PRIMARY KEY, word1id INTEGER NOT NULL, word2id INTEGER NOT NULL, intweet INTEGER NOT NULL, consecutive INTEGER NOT NULL);
 
 #SELECT id FROM singles WHERE word == '%s' LIMIT 1 #word1id
 #SELECT id FROM singles WHERE word == '%s' LIMIT 1 #word2id
@@ -67,4 +69,5 @@ def inserter(inqueue,kill):
                 cursor.execute(query)
             except:
                 pass
+        cursor.execute("UPDATE tweetsum SET count = count + 100 WHERE id = 1")
         database.commit()
