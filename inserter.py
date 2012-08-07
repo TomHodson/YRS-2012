@@ -49,11 +49,22 @@ def inserter(inqueue,kill):
                 query = "INSERT INTO doubles (word1id,word2id,intweet,consecutive) VALUES (%d, %d, %d, %d)"
                 query = query % (word1id,word2id,intweet,consecutive)
             else:
-                query = "UPDATE doubles SET intweet = intweet + %d, consecutive = consecutive + %d WHERE word1id == %d AND WHERE word2id == %d"
-                query = query % (intweet,consecutive,word1id,word2id)
+                if not intweet:
+                    setintweet = ""
+                else:
+                    setintweet = "intweet = intweet + %d" % intweet
+                if not consecutive:
+                    setconsecutive = ""
+                else:
+                    setconsecutive = "consecutive = consecutive + %d" % consecutive
+                if setintweet and setconsecutive:
+                    doset = setintweet+","+setconsecutive
+                else:
+                    doset = setintweet if setintweet else setconsecutive
+                query = "UPDATE doubles SET %s WHERE word1id == %d AND word2id == %d"
+                query = query % (doset,word1id,word2id)
             try:
                 cursor.execute(query)
             except:
-                print query
+                pass
         database.commit()
-        print "set"
