@@ -24,7 +24,8 @@ def inserter(inqueue,kill):
                 query = "INSERT INTO singles (word,count) VALUES ('%s', %d)" % (word,tweets[word])
             else:
                 query = "UPDATE singles SET count = count + %d WHERE word = '%s'" % (tweets[word],word)
-            print query
+            cursor.execute(query)
+        database.commit()
 
 from Queue import Queue
 q = Queue()
