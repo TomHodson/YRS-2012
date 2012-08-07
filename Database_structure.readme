@@ -1,8 +1,13 @@
-Singles:
-	<word>		<count>		<prob>
-	TEXT		INTEGER		REAL
+id collumns must be different in order to join the tables with getting an 'ambiguous collumn name' error
 
+Singles:
+	<s_id>	<word>		<count>		<prob>
+	INTEGER	TEXT		INTEGER		REAL
+	PRIMARY
+	KEY
 
 Doubles:
-	<word1id>	<word2id>	<intweet>	<consecutive>	<intweetprob>	<consecutiveprob>	<intweetstrength>	<consecutivestrength>
-	INTEGER		INTEGER		INTEGER		INTEGER			REAL			REAL				REAL				REAL
+	<d_id>	<word1id>	<word2id>	<intweet>	<consecutive>	<intweetprob>	<consecutiveprob>	<intweetstrength>	<consecutivestrength>
+	INTEGER	INTEGER		INTEGER		INTEGER		INTEGER			REAL			REAL				REAL				REAL
+	PRIMARY
+	KEY
