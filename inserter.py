@@ -17,7 +17,7 @@ def inserter(inqueue,kill):
         #{("word1","word2"),(consecutive,intweet)}
         database = sqlite3.connect("data.db")
         cursor = database.cursor()
-        for word in tweets.keys():#.singles:
+        for word in tweets.singles:
             query = "SELECT word FROM singles WHERE word == '%s' LIMIT 1" % word
             cursor.execute(query)
             if not cursor.fetchone():
