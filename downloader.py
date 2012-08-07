@@ -40,7 +40,7 @@ def downloader(queue):
         if not tweetjson[u"user"][u"lang"] == u"en": #only want en tweets
             continue
         try: #incase something went wrong
-            tweet.body = tweetjson[u"text"]
+            tweet.raw = tweetjson[u"text"]
         except:
             continue #if no text, move to next tweet
         queue.put(tweet) #add to end of queue
