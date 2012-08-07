@@ -1,0 +1,8 @@
+Singles:
+	<word>		<count>		<prob>
+	TEXT		INTEGER		REAL
+
+
+Doubles:
+	<word1id>	<word2id>	<intweet>	<consecutive>	<intweetprob>	<consecutiveprob>	<intweetstrength>	<consecutivestrength>
+	INTEGER		INTEGER		INTEGER		INTEGER			REAL			REAL				REAL				REAL
