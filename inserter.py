@@ -1,8 +1,7 @@
-#CREATE TABLE singles(id INTEGER PRIMARY KEY, word varchar(140) UNIQUE NOT NULL ON CONFLICT REPLACE, count INTEGER NOT NULL);
-#CREATE TABLE doubles(id INTEGER PRIMARY KEY, word1id INTEGER NOT NULL, word2id INTEGER NOT NULL, intweet INTEGER NOT NULL, consecutive INTEGER NOT NULL);
+#CREATE TABLE singles(id INTEGER PRIMARY KEY, word varchar(140) UNIQUE NOT NULL ON CONFLICT REPLACE, count INTEGER NOT NULL, prob double);
+#CREATE TABLE doubles(id INTEGER PRIMARY KEY, word1id INTEGER NOT NULL, word2id INTEGER NOT NULL, intweet INTEGER NOT NULL, consecutive INTEGER NOT NULL, intweetprob double, consecprob double, intweetstrength double, consecstrength double);
 #CREATE TABLE tweetsum (id INTEGER PRIMARY KEY,count INTEGER);
 #INSERT INTO tweetsum VALUES(1,0);
-
 
 #SELECT word FROM singles WHERE word == '%s' LIMIT 1
 #   INSERT INTO singles (word,count) VALUES ('%s', %d)
