@@ -1,25 +1,14 @@
+
 import sqlite3
-database = sqlite3.connect("data.db")
-cursor = database.cursor()
-
-def totalcount():
-	query = "SELECT sum(count) FROM singles"
-	cursor.execute(query, wordid)
-	return cursor.fetchone()	
-
-def getwordcountandprob(wordid):
-	query = "SELECT count,normalised FROM singles WHERE id == ?"
-	cursor.execute(query, wordid)
-	return cursor.fetchone()
+database = sqlite3.connect("minimaltest.db")
+database.row_factory = sqlite3.Row #wraps the tuples returned by cursor with a highly optimised and useful object
+cursor = database.cursor()	
 
 def postprocess():
 	#Go through the singles table and set the 'prob' column equal to the count 
 	#for that word divided by the total number of words
-    total = totalcount()
-    	cursor.execute(
-    		"UPDATE singles SET prob = count / {}  ".format(float(total))
-
-
+    total = cursor.execute("SELECT SUM(count) FROM singles").fetchone()[0]
+    cursor.execute("UPDATE singles SET prob = count / {}  ".format(float(total)))
 
     #loop through all the entries in the doubles table and there are four 
     #values that need to be set:
@@ -27,7 +16,7 @@ def postprocess():
     #intweetprob = number of times we've seen word2 in tweets that contain 
     #word1 DIVIDED BY number of times we've seen word1 (from the singles table)
 
-    #intweetstrength = intweetprob / prob (0-1) of seeing word1 in any tweet 
+    #intweetstrength = intweetprob / prob of seeing word1 in any tweet 
     #(singles table) 
 
     #consecprob = number of times we've seen word2 directly after word1 divided
@@ -36,18 +25,33 @@ def postprocess():
     #consecstrength = consecprob / prob (0-1) of seeing word1 in any tweet 
     #(singles table)     
 
-    #dividing the conditional probablity (intweetprob or consecprob) by the base probability
-    # of the given word (word1) gives a measure of how much more more likely 
-    #you are to see word 2 in a tweet than you are to see it in any tweet
-    #which gives a measure of the 'strength' of the connection between two 
-    #words
+    cursor.execute("SELECT singles.id, intweet, consecutive, count, prob FROM doubles INNER JOIN singles ON doubles.word1id == singles.id")
+    for record in cursor:
+        invcount = 1.0 / record['count']#'count' and 'prob' are coming from the word1 record in the singles table
+        invprob = 1.0 /  record['prob']
 
-    doublequery = "SELECT id,word1id, word2id, intweet, consecutive FROM doubles"
-    cursor.execute(doublequery)
-    doubles = cursor.fetchall()
-    for record in doubles:
-    	countword1, probword1 = getwordcount(record[0])
-    	id,word1id, word2id, intweet, consecutive = record
-    	condprobintweet = countword2givenword1 / float(countword1)
-    	linkstrength = condprobintweet / probword1
-    	updatequery = "UPDATE doubles SET intweetstrength == {} WHERE id == {}".format(intweetstrength, id)
+        intweetprob = record['intweet'] * invcount #multipying by the inverse is the same as dividing but you only have to do 
+        intweetstrength = intweetprob * invprob    #the expensive division once
+
+        consecprob = record['consecutive'] * invcount
+        consecstrength = consecprob * invprob
+
+    	updatequery = """
+        UPDATE doubles
+        SET intweetprob = {},
+        intweetstrength = {},
+        consecprob =      {},
+        consecstrength =  {}
+        WHERE id == {}
+        """.format(
+            intweetprob,
+            intweetstrength,
+            consecprob,
+            consecstrength,
+            record['id']
+        )
+        cursor.execute(updatequery)
+    database.commit()
+
+if __name__ == '__main__':
+    pass
