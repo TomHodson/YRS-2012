@@ -27,7 +27,7 @@ def downloader(queue,killproc):
     sock.send(req) #send our request
     for i in range(5): #get rid of http response
         readline(sock)
-    while not killproc: #begin reading tweets
+    while not killproc == 1: #begin reading tweets
         tweet = Tweet()
         tweetraw = readline(sock) #tweet json data
         readline(sock) #size of next tweet
@@ -44,4 +44,5 @@ def downloader(queue,killproc):
         except:
             continue #if no text, move to next tweet
         queue.put(tweet) #add to end of queue
+    print "downloader out"
     sock.close()

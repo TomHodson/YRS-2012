@@ -7,17 +7,11 @@ import signal
 
 def cleanup(signal,frame):
     killProc = 1
-    fromDownloadQueue.join()
-    downloadert.terminate()
-    fromSanitiserQueue.join()
-    sanitisert.terminate()
-    fromMergerQueue.join()
-    mergert.terminate()
-
+    
 signal.signal(signal.SIGINT,cleanup)
 
 fromDownloadQueue = JoinableQueue()
-killProc = Value(0)
+killProc = Value('d',0)
 fromSanitiserQueue = JoinableQueue()
 fromParserQueue = JoinableQueue()
 fromMergerQueue = JoinableQueue()
@@ -25,14 +19,17 @@ fromMergerQueue = JoinableQueue()
 downloadert = Process(target = downloader, args=(fromDownloadQueue,killProc))
 downloadert.start()
 
-sanitisert = Process(target = sanitiser, args=(fromDownloadQueue,fromSanitiserQueue))
+sanitisert = Process(target = sanitiser, args=(fromDownloadQueue,fromSanitiserQueue,killProc))
 sanitisert.start()
 
-parsert = Process(target = parser, args=(fromSanitiserQueue,fromParserQueue))
+parsert = Process(target = parser, args=(fromSanitiserQueue,fromParserQueue,killProc))
 parsert.start()
 
-mergert = Process(target = merger, args=(fromParserQueue,fromMergerQueue))
+mergert = Process(target = merger, args=(fromParserQueue,fromMergerQueue,killProc))
 mergert.start()
 
 while True:
-    print fromMergerQueue.get(True)
+    try:
+        print fromMergerQueue.get(True)
+    except IOError:
+        import sys;sys.exit()

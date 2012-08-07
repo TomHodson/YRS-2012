@@ -1,9 +1,13 @@
 import re
 import string
-def sanitiser(inqueue, outqueue):
-    while True:
-        tweetobj = inqueue.get(True)
-        tweet = tweetobj.body
+def sanitiser(inqueue, outqueue, kill):
+    while not kill == 1:
+        try:
+            tweetobj = inqueue.get(True)
+        except IOError:
+            print "sanitiser out"
+            return
+        tweet = tweetobj.raw
         tweet = re.sub("[(){}\[\]]","",tweet)
         tweet = re.sub("[%s]*[%s]+[%s]+" % (string.ascii_letters, string.punctuation, string.ascii_letters),"",tweet)
         tweet = re.sub("[%s]" % string.punctuation, "",tweet)

@@ -1,8 +1,12 @@
 from collections import Counter
 
-def consecutiveparser(inqueue,outqueue):
-    while True: #forever
-        tweet = inqueue.get(True) #read tweet object
+def consecutiveparser(inqueue,outqueue,kill):
+    while not kill == 1: #forever
+        try:
+            tweet = inqueue.get(True) #read tweet object
+        except IOError:
+            print "parser out"
+            return
         body = tweet.body #get tweet data
         single = Counter()
         for word in body: #get count of single words

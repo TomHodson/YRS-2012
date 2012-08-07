@@ -1,10 +1,14 @@
 from collections import Counter
 
-def merger(inqueue,outqueue):
-    while True:
+def merger(inqueue,outqueue,kill):
+    while not kill == 1:
         tweetcache = []
         while len(tweetcache) < 100:
-            tweetcache.append(inqueue.get(True))
+            try:
+                tweetcache.append(inqueue.get(True))
+            except IOError:
+                print "merger out"
+                return
         singles = [i.single for i in tweetcache]
         doubles = [i.double for i in tweetcache]
         singles = dict(sum((Counter(dict(x)) for x in singles),Counter()))
