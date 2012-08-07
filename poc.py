@@ -2,6 +2,7 @@ from downloader import downloader
 from sanitiser import sanitiser
 from parser import parser
 from merger import merger
+from inserter import inserter
 from multiprocessing import Process,JoinableQueue,Value
 import signal
 
@@ -28,8 +29,6 @@ parsert.start()
 mergert = Process(target = merger, args=(fromParserQueue,fromMergerQueue,killProc))
 mergert.start()
 
-while True:
-    try:
-        print fromMergerQueue.get(True)
-    except IOError:
-        import sys;sys.exit()
+insertert = Process(target = inserter, args=(fromMergerQueue,killProc))
+insertert.start()
+insertert.join()

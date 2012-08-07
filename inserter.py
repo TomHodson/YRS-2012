@@ -26,11 +26,5 @@ def inserter(inqueue,kill):
                 query = "UPDATE singles SET count = count + %d WHERE word = '%s'" % (tweets[word],word)
             cursor.execute(query)
         database.commit()
-
-from Queue import Queue
-q = Queue()
-q.put({"test":6})
-q.put({"fail":5})
-q.put({"guess":3})
-q.put({"test":1})
-inserter(q,0)
+        cursor.execute("SELECT count(word) FROM singles")
+        print cursor.fetchone()
