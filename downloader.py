@@ -1,7 +1,6 @@
 import base64
 import socket
 import ssl
-from multiprocessing import Queue
 import json
 
 class Tweet(): #empty class to store tweet metadata

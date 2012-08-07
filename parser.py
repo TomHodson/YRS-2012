@@ -6,7 +6,6 @@ def parser(inqueue,outqueue,kill):
         try:
             tweet = inqueue.get(True) #read tweet object
         except IOError:
-            print "parser out"
             return
         tweet.body #get tweet data
 
