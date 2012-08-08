@@ -14,8 +14,8 @@
 #   UPDATE doubles SET intweet = intweet + %d, consecutive = consecutive + %d WHERE word1id == %d AND WHERE word2id == %d
 
 Singles:
-	<id>	<word>		<count>		<prob>
-	INTEGER	TEXT		INTEGER		REAL
+	<id>	<word>		<count>		<prob>		<uniquecount> 	<uniqueprob>
+	INTEGER	TEXT		INTEGER		REAL		INTEGER			REAL
 	PRIMARY
 	KEY
 

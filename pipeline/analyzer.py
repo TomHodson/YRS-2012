@@ -1,5 +1,5 @@
 from collections import Counter, defaultdict, namedtuple
-from itertools import permutations
+from itertools import combinations
 
 def analyzer(inqueue,outqueue,kill):
     "Creates counts for individual and pairs of words and tracks various metrics"
@@ -23,8 +23,10 @@ def analyzer(inqueue,outqueue,kill):
             pair = tuple(tweet.body[i:i+2])
             tweet.double[pair][0] += 1
         #make intweetdata
-        wordpairs = permutations(tweet.body, 2) #all the ways of picking two words from the tweet where word1 != word2
-        def f(x): tweet.double[x][1] += 1
+        wordpairs = combinations(set(tweet.body), 2) #all the unordered ways of picking two words from the tweet where word1 != word2
+        def f(x): 
+            x = tuple(sorted(x))
+            tweet.double[x][1] += 1
         map(f, wordpairs) #using fp here for the lulz
             
         tweet.single = dict(tweet.single)
@@ -41,12 +43,12 @@ if __name__ == '__main__':
         def __init__(self):
                 pass
     testtweet = Tweet()
-    testtweet.body = ['this', 'is', 'a', 'test', 'blah', 'word', 'slajd']
+    testtweet.body = ['this', 'is', 'a', 'this']
     inputqueue = Queue()
     inputqueue.put(testtweet)
     outputqueue = Queue()
 
-    p = Process(target = parser, args = (inputqueue, outputqueue, 0))
+    p = Process(target = analyzer, args = (inputqueue, outputqueue, 0))
     p.start()
     inputqueue.join()
     p.terminate()
