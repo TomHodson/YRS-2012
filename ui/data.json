@@ -1,0 +1,1 @@
+{"nodes":[{"name":"Myriel","color":"#f00", "size": 5},{"name":"Napoleon","color":"#00ff00", "size":7},{"name":"Mlle.Baptistine","color":"#0000ff", "size": 10}],"links":[{"source":1,"target":0,"value":1,"color":"#f00"},{"source":2,"target":0,"value":8,"color":"#0f0"},{"source":2,"target":1,"value":10, "color":"#00f"}]}
