@@ -7,7 +7,7 @@ node = """{"name":"%s","color":"#f00", "size": %d, "id":%d}"""
 link = """{"source":%d,"target":%d,"value":%d, "color":"#f00"}"""
 
 def getconnwords(wid):
-    query = "SELECT word2id,consecutive FROM doubles WHERE consecutive > 0 AND (word1id == %d OR word2id == %d)" % (wid,wid)
+    query = "SELECT word2id,consecprob FROM doubles WHERE consecutive > 0 AND (word1id == %d OR word2id == %d)" % (wid,wid)
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -27,19 +27,18 @@ def consecutive(word):
     if not wid: return '{"ERROR":"word not found"}'
     allnodes = []
     alllinks = []
-    allwidsdup = getconnwords(wid)
-    allwids=[]
+    allwids = list(set(getconnwords(wid)))
     allnodes.append(node % (word,prob,wid))
-    for i in allwidsdup:
-        if i not in allwids:
-            allwids.append(i)
     for cwid,consec in allwids:
+        if cwid == wid: continue
         word,count = getidcount(cwid)
         cnode = node % (word.encode('ascii','ignore'), count,cwid)
         allnodes.append(cnode)
+    import math
     for cwid,consec in allwids:
         clink = link % (0,getnodeindex(cwid,allnodes),consec)
         if clink not in alllinks: alllinks.append(clink)
+    #allnodes = list(set(allnodes))
+    alllinks = list(set(alllinks))
     return full % (',\n'.join(allnodes),',\n'.join(alllinks))
         
-print consecutive("you")
