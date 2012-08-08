@@ -16,7 +16,14 @@ class JSON(resource.Resource):
 		
 		if not request.args: # if there are no args
 			request.setHeader("content-type", "text/html")
-			return open('../ui/mainpage.html').read()
+			if request.path == '/':
+				return open('./index.html').read()
+			else:
+				try:	
+					return open('.{path}'.format(path=request.path)).read()
+				except IOError:
+					request.setResponseCode(404)
+					return 'Error'
 
 
 		else:
