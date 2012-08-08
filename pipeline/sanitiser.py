@@ -12,6 +12,8 @@ def sanitiser(inqueue, outqueue, kill):
         tweet = re.sub("[%s]*[%s]+[%s]+" % (string.ascii_letters, string.punctuation.replace('#',''), string.ascii_letters),"",tweet)
         tweet = re.sub("[%s]" % string.punctuation.replace('#',''), "",tweet)
         tweet = re.sub(" +"," ",tweet)
+        tweet = tweet.encode('ascii','ignore')
+        if not tweet: continue
         tweetobj.body = tweet.lower().split()
         inqueue.task_done()
         outqueue.put(tweetobj)
