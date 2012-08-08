@@ -42,4 +42,3 @@ def consecutive(word):
     alllinks = list(set(alllinks))
     return full % (',\n'.join(allnodes),',\n'.join(alllinks))
         
-print consecutive("you")
