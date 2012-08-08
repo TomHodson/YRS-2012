@@ -8,12 +8,24 @@
         
         <script src="vivagraph.min.js"></script>
         <script type='text/javascript'>
+            var handlemouseover = function(node) {
+                title = node.getAttribute("title");
+                document.getElementById('wordname').innerHTML = title
+            }
+            var handlemouseout = function(node) {
+                title = node.getAttribute("title");
+                console.log(title);
+                document.getElementById('wordname').innerHTML = ""
+            }
         
             /*global Viva, $*/
             function onLoad() {
                  var d3Sample = function(){
                     var g = Viva.Graph.graph();
-                    var data = {"nodes":[{"name":"Myriel","color":'#f00', "size": 5},{"name":"Napoleon","color":'#00ff00', "size":7},{"name":"Mlle.Baptistine","color":'#0000ff', "size": 10}],"links":[{"source":1,"target":0,"value":1,"color":'#f00'},{"source":2,"target":0,"value":8,"color":"#0f0"},{"source":2,"target":1,"value":10, "color":"#00f"}]}
+                    xmlhttpreq = new XMLHttpRequest();
+                    xmlhttpreq.open("GET","data.json",false);
+                    xmlhttpreq.send();
+                    var data = JSON.parse(xmlhttpreq.responseText)
                     g.Name = "YRS-2012";
                     
                     for (var i = 0; i < data.nodes.length; ++i){
@@ -59,9 +71,10 @@
                         var circle = Viva.Graph.svg('circle')
                             .attr('r', node.data.size ? node.data.size : 1)
                             .attr("fill",node.data.color ? node.data.color : '#000')
-                            
+                            .attr("title",node.data.name)
+                            .attr("onmouseover","handlemouseover(this)")
+                            .attr("onmouseout","handlemouseout(this)");
                         circle.append('title').text(node.data.name);
-                            
                         return circle;
                             
                     }).placeNode(function(nodeUI, pos){
@@ -117,5 +130,6 @@
         <div style='width:100%; height:100%; position:absolute;'>
             <div id='graph1'></div>
         </div>
+        <div style="float: left; z-index: 2;" id="wordname"></div>
     </body>
 </html>
