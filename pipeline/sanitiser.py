@@ -1,6 +1,7 @@
 import re
 import string
 def sanitiser(inqueue, outqueue, kill):
+    "Removes punctuation, email addresses and links from the Tweet.raw, then tokenises it and puts it into Tweet.body"
     while not kill == 1:
         try:
             tweetobj = inqueue.get(True)

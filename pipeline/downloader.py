@@ -13,6 +13,8 @@ def readline(sock): #read single line (tweet) from socket
     return tweet
 
 def downloader(queue,killproc):
+    "Downloads tweets from twitter and adds a Tweet object to the sanitiser queue with the raw text in Tweet.raw"
+    
     user = "RoryMcNamara3"
     pwd = "YRS2012"
     sock = socket.socket()

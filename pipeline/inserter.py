@@ -15,6 +15,8 @@
 import sqlite3
 
 def inserter(inqueue,kill):
+    """Takes a Tweets object and runs the necessary MySQL queries to enter
+     it into the DB."""
     while not kill == 1:
         try:
             tweets = inqueue.get(True)

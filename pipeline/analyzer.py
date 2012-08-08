@@ -1,7 +1,8 @@
 from collections import Counter, defaultdict, namedtuple
 from itertools import permutations
 
-def parser(inqueue,outqueue,kill):
+def analyzer(inqueue,outqueue,kill):
+    "Creates counts for individual and pairs of words and tracks various metrics"
     while not kill == 1: #forever
         try:
             tweet = inqueue.get(True) #read tweet object

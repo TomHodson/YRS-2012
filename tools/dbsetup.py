@@ -1,5 +1,7 @@
 
-testrecords = True #whether to add some records for testing
+#creates a clean DB and optionaly puts some test data in it
+
+testrecords = False #whether to add some records for testing
 
 import sqlite3
 database = sqlite3.connect("../data.db")

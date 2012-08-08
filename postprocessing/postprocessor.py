@@ -5,6 +5,11 @@ database.row_factory = sqlite3.Row #wraps the tuples returned by cursor with a h
 cursor = database.cursor()	
 
 def postprocess():
+    """Values dependant on the raw metrics can only be efficiently computed when the DB
+     is not being modified by the scraper so the post processor performs these 
+     computations and stores them in the DB.These values will be valid untill the next
+      time the scaper is run."""
+
 	#Go through the singles table and set the 'prob' column equal to the count 
 	#for that word divided by the total number of words
     total = cursor.execute("SELECT SUM(count) FROM singles").fetchone()[0]

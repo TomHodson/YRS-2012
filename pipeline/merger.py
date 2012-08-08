@@ -6,6 +6,10 @@ class Tweets:
 
 
 def merger(inqueue,outqueue,kill):
+    """Waits for a large number of tweets to a accumulate
+     (dependant on available RAM) then merges their data together to attain 
+     a Tweets object that contains the sums of the individual metrics,
+      this is effectively a in-memory cache to ease load on the DB."""
     while not kill == 1:
         tweets = Tweets()
         tweets.singles = Counter()
