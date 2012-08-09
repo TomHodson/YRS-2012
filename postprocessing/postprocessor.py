@@ -14,7 +14,7 @@ def postprocess():
 	#for that word divided by the total number of words
     total = cursor.execute("SELECT SUM(count) FROM singles").fetchone()[0]
     uniquetotal = cursor.execute("SELECT SUM(uniquecount) FROM singles").fetchone()[0]
-    cursor.execute("UPDATE singles SET prob = count / {}, uniqueprob = unique / {}".format(float(total), float(uniquetotal)))
+    cursor.execute("UPDATE singles SET prob = count / {}, uniqueprob = uniqueprob / {}".format(float(total), float(uniquetotal)))
 
     print 'singles done'
     #loop through all the entries in the doubles table and there are four 
