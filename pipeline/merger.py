@@ -16,7 +16,14 @@ def merger(inqueue,outqueue,kill):
         for _ in range(100):
             try:
                 tweet = inqueue.get(True)
-                tweets.singles += Counter(tweet.single) #this works because addition is defined for Counter objects
+                
+                tweets.singles = defaultdict(lambda : [0, 0])
+                for wordpair in tweet.single:
+                    tweets.singles[wordpair][0] += tweet.single[wordpair][0]
+                    tweets.singles[wordpair][1] += tweet.single[wordpair][1]
+                tweets.singles = dict(tweets.singles)
+
+
                 tweets.doubles = defaultdict(lambda : [0, 0])
                 for wordpair in tweet.double:
                     tweets.doubles[wordpair][0] += tweet.double[wordpair][0]
@@ -26,7 +33,7 @@ def merger(inqueue,outqueue,kill):
                 return
         outqueue.put(tweets)
 
-if __name__ == '__main__':
+if __name__ == '__main__': #OUT OF DATE
     from multiprocessing import JoinableQueue, Process, Value
 
     class Tweet:
