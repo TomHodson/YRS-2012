@@ -5,10 +5,10 @@ from collections import Counter
 database = gdbm.open("../markov.db","csu")
 
 def gettriples(data):
-    data = data.split()
+    data = data.lower().split()
     triples = []
     for i in range(len(data)-2):
-        triples.append(data[i:i+3].lower())
+        triples.append(data[i:i+3])
     return triples
 
 def addtriple(triple):
