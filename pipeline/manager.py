@@ -22,34 +22,37 @@ def cleanup():
     for i in active_children():
         kill(i.pid,SIGKILL)
     import sys;sys.exit()
+try:
+    fromDownloadQueue = JoinableQueue()
+    killProc = Value('d',0)
+    toSanitiser = JoinableQueue()
+    toMarkov = JoinableQueue()
+    fromSanitiserQueue = JoinableQueue()
+    fromAnalyzerQueue = JoinableQueue()
+    fromMergerQueue = JoinableQueue()
 
-fromDownloadQueue = JoinableQueue()
-killProc = Value('d',0)
-toSanitiser = JoinableQueue()
-toMarkov = JoinableQueue()
-fromSanitiserQueue = JoinableQueue()
-fromAnalyzerQueue = JoinableQueue()
-fromMergerQueue = JoinableQueue()
+    downloadert = Process(target = downloader, args=(fromDownloadQueue,killProc))
+    downloadert.start()
 
-downloadert = Process(target = downloader, args=(fromDownloadQueue,killProc))
-downloadert.start()
+    forkert = Process(target = forker, args=(fromDownloadQueue,toSanitiser,toMarkov,killProc))
+    forkert.start()
 
-forkert = Process(target = forker, args=(fromDownloadQueue,toSanitiser,toMarkov,killProc))
-forkert.start()
+    sanitisert = Process(target = sanitiser, args=(toSanitiser,fromSanitiserQueue,killProc))
+    sanitisert.start()
+    markovt = Process(target = markov, args=(toMarkov,killProc))
+    markovt.start()
 
-sanitisert = Process(target = sanitiser, args=(toSanitiser,fromSanitiserQueue,killProc))
-sanitisert.start()
-markovt = Process(target = markov, args=(toMarkov,killProc))
-markovt.start()
+    analyzert = Process(target = analyzer, args=(fromSanitiserQueue,fromAnalyzerQueue,killProc))
+    analyzert.start()
 
-analyzert = Process(target = analyzer, args=(fromSanitiserQueue,fromAnalyzerQueue,killProc))
-analyzert.start()
+    mergert = Process(target = merger, args=(fromAnalyzerQueue,fromMergerQueue,killProc))
+    mergert.start()
 
-mergert = Process(target = merger, args=(fromAnalyzerQueue,fromMergerQueue,killProc))
-mergert.start()
+    insertert = Process(target = inserter, args=(fromMergerQueue,killProc))
+    insertert.start()
 
-insertert = Process(target = inserter, args=(fromMergerQueue,killProc))
-insertert.start()
-
-raw_input("press any key to exit\n") #blocks
-cleanup()
+    raw_input("press any key to exit\n") #blocks
+    cleanup()
+except BaseException as error:
+    print "CTRL-C caught!", error
+    cleanup()
