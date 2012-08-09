@@ -63,6 +63,7 @@ def getchildren(wordpair):
 
 graphid = {}
 
+
 addnode(wordpair[0],{},root=True)
 addnode(wordpair[1],{},root=True)
 addlink(wordpair[0],wordpair[1],{},root = True)
