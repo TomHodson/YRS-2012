@@ -12,21 +12,19 @@ def merger(inqueue,outqueue,kill):
       this is effectively a in-memory cache to ease load on the DB."""
     while not kill == 1:
         tweets = Tweets()
-        tweets.singles = Counter()
+        tweets.singles = defaultdict(lambda : [0, 0])
+        tweets.doubles = defaultdict(lambda : [0, 0])
         for _ in range(100):
             try:
                 tweet = inqueue.get(True)
             except IOError:
                 return
                 
-            tweets.singles = defaultdict(lambda : [0, 0])
             for wordpair in tweet.single:
                 tweets.singles[wordpair][0] += tweet.single[wordpair][0]
                 tweets.singles[wordpair][1] += tweet.single[wordpair][1]
             tweets.singles = dict(tweets.singles)
 
-
-            tweets.doubles = defaultdict(lambda : [0, 0])
             for wordpair in tweet.double:
                 tweets.doubles[wordpair][0] += tweet.double[wordpair][0]
                 tweets.doubles[wordpair][1] += tweet.double[wordpair][1]
