@@ -4,19 +4,26 @@ from twisted.web.static import File
 from consecutive import consecutive
 
 def dummy(request):
-    return "{}"
+	return "{}"
 
 
-graphfunctions = {'dummy' : dummy}
+graphfunctions = {'consec' : consecutive}
 
 class JSON(resource.Resource):
-<<<<<<< HEAD
 	isLeaf = True
 	
 	def render_GET(self, request):
 		print 'a get request'
-		
-		if not request.args: # if there are no args
+
+		if request.args and request.path.endswith('.json'): #requesting dynamic json content
+
+			request.setHeader("content-type", "application/json")
+
+			function = graphfunctions[request.args['graphtype']]
+
+			return function(request.args)
+	
+		else: # server static
 			request.setHeader("content-type", "text/html")
 			if request.path == '/':
 				return open('./index.html').read()
@@ -26,27 +33,6 @@ class JSON(resource.Resource):
 				except IOError:
 					request.setResponseCode(404)
 					return 'Error'
-=======
-    isLeaf = True
-    
-    def render_GET(self, request):
-        print 'a get request'
-    	
-        if not request.args: # if there are no args
-            request.setHeader("content-type", "text/html")
-            return open('mainpage.html').read()
->>>>>>> 5aa2f50c757ea1b8f0bbd134fd97ddf93497ce9a
-
-
-        else:
-            request.setHeader("content-type", "application/json")
-
-            #function = graphfunctions[request.args['graphtype']]
-            if request.args['graphtype'][0] == "consec":
-                return "consec"
-            return function(request)
-   	
-
 
 reactor.listenTCP(8000, server.Site(JSON()))
 reactor.run()
