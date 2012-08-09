@@ -22,12 +22,15 @@ def getnodeindex(cwid,allnodes):
             return index
 
 def consecutive(args):
-    word = args['seed']
-    num = args['num']
+    word = args['seed'][0]
+    num = args['depth'][0]
+
+    print word, num
 
     cursor.execute("SELECT id,prob FROM singles WHERE word == '%s'" % word)
-    wid,prob = cursor.fetchone()
-    if not wid: return '{"ERROR":"word not found"}'
+    try:
+        wid,prob = cursor.fetchone()
+    except: return '{"ERROR":"word not found"}'
     allnodes = []
     alllinks = []
     allwids = list(set(getconnwords(wid, num)))

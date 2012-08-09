@@ -7,17 +7,22 @@ def dummy(request):
 	return "{}"
 
 
-graphfunctions = {'consec' : consecutive}
+graphfunctions = {'consecutive' : consecutive}
 
 class JSON(resource.Resource):
     isLeaf = True
 	
     def render_GET(self, request):
         if request.args and request.path.endswith(".json"):
-            seed = request.args['word'][0]
-            depth = request.args['depth'][0]
-            #HANDLE json REQUESTS HERE
-            return ""
+            try:
+                functionname = request.args["function"][0]
+                print repr(functionname), graphfunctions
+                function = graphfunctions[functionname]
+                print function
+
+                return "some output" + function(request.args)
+            
+            except KeyError as error: return "Unrecognised function", error
         else:
             request.setHeader("content-type", "text/html")
             if request.path == '/':
@@ -30,4 +35,8 @@ class JSON(resource.Resource):
                     return 'Error'
 
 reactor.listenTCP(8000, server.Site(JSON()))
-reactor.run()
+try:
+    reactor.run()
+except:
+    reactor.stop()
+
