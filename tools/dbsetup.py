@@ -10,6 +10,8 @@ database.execute("""CREATE TABLE
  tweetsum(id INTEGER PRIMARY KEY,
   count INTEGER NOT NULL);""")
 
+database.execute("""INSERT INTO tweetsum VALUES(1,0)""")
+
 database.execute("""CREATE TABLE
  singles(id INTEGER PRIMARY KEY,
   word varchar(140) UNIQUE NOT NULL ON CONFLICT REPLACE,
