@@ -17,3 +17,24 @@ def sanitiser(inqueue, outqueue, kill):
         tweetobj.body = tweet.lower().split()
         inqueue.task_done()
         outqueue.put(tweetobj)
+
+
+if __name__ == '__main__':
+    import time
+    from multiprocessing import Process
+    from multiprocessing import JoinableQueue as Queue
+    class Tweet():
+        def __init__(self):
+                pass
+    testtweet = Tweet()
+    testtweet.raw = "oh a tricky)((*()one <end> <?DF test*test"
+    inputqueue = Queue()
+    inputqueue.put(testtweet)
+    outputqueue = Queue()
+
+    p = Process(target = sanitiser, args = (inputqueue, outputqueue, 0))
+    p.start()
+    inputqueue.join()
+    p.terminate()
+    out = outputqueue.get()
+    print 'parser: len={}, {}, {}'.format(len(out.double), out.single, out.double) 
