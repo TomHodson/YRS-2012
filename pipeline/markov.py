@@ -8,17 +8,10 @@ def gettriples(data):
     data = data.split()
     triples = []
     for i in range(len(data)-2):
-        triples.append(data[i:i+3])
+        triples.append(data[i:i+3].lower())
     return triples
 
 def addtriple(triple):
-    #key = json.dumps((triple[0],triple[1]))
-    #if key not in  database.keys():
-    #    database[key] = json.dumps([triple[2]])
-    #else:
-    #    data = json.loads(database[key])
-    #    data.append(triple[2])
-    #    database[key] = json.dumps(data)
     key = json.dumps((triple[0],triple[1]))
     if not key in database.keys():
         database[key] = json.dumps(Counter([triple[2]]))
