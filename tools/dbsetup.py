@@ -14,7 +14,10 @@ database.execute("""CREATE TABLE
  singles(id INTEGER PRIMARY KEY,
   word varchar(140) UNIQUE NOT NULL ON CONFLICT REPLACE,
   count INTEGER NOT NULL,
-  prob double);""")
+  prob REAL,
+  uniquecount INTEGER NOT NULL,
+  uniqueprob REAL);
+	""")
 
 database.execute("""CREATE TABLE
  doubles(id INTEGER PRIMARY KEY,
@@ -22,10 +25,10 @@ database.execute("""CREATE TABLE
  word2id INTEGER NOT NULL,
  intweet INTEGER NOT NULL,
  consecutive INTEGER NOT NULL,
- intweetprob double,
- consecprob double,
- intweetstrength double,
- consecstrength double);
+ intweetprob REAL,
+ consecprob REAL,
+ intweetstrength REAL,
+ consecstrength REAL);
 """)
 
 if testrecords:
