@@ -1,5 +1,6 @@
 import json
 import gdbm
+from collections import Counter
 
 database = gdbm.open("../markov.db","csu")
 
@@ -11,12 +12,19 @@ def gettriples(data):
     return triples
 
 def addtriple(triple):
+    #key = json.dumps((triple[0],triple[1]))
+    #if key not in  database.keys():
+    #    database[key] = json.dumps([triple[2]])
+    #else:
+    #    data = json.loads(database[key])
+    #    data.append(triple[2])
+    #    database[key] = json.dumps(data)
     key = json.dumps((triple[0],triple[1]))
-    if key not in  database.keys():
-        database[key] = json.dumps([triple[2]])
+    if not key in database.keys():
+        database[key] = json.dumps(Counter([triple[2]]))
     else:
-        data = json.loads(database[key])
-        data.append(triple[2])
+        data = Counter(json.loads(database[key]))
+        data[triple[2]] += 1
         database[key] = json.dumps(data)
 
 def markov(inqueue,killProc):

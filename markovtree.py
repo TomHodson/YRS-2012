@@ -3,6 +3,7 @@ import xmlrpclib
 import json
 from collections import Counter
 from random import randrange
+from sys import exit
 
 def addnode(nid,word,count):
     G.new_vertex_w_id(nid)
@@ -19,8 +20,11 @@ def addlink(eid,nid1,nid2,width):
 
 def getnameperc(word,level):
     perc = level[word]/float(sum(level.values()))
-    word = word + " (%.2f%%)" % perc
+    word = word + " (%.2f%%)" % (perc*100)
     return word,perc*10
+
+def topn(level):
+    return dict(sorted(level.iteritems(), key=lambda x:x[1], reverse=True)[:limit])
 
 server_url = "http://127.0.0.1:20738/RPC2"
 server = xmlrpclib.Server(server_url)
@@ -31,31 +35,40 @@ database = gdbm.open("markov.db","r")
 
 graphid = {}
 
-wordpair = [u"and",u"the"]
+wordpair = [u"in",u"the"]
+limit = 10
+
 for word in wordpair:
     wordid = randrange(2**16)
     addnode(wordid,word,2.5)
     graphid[word] = wordid
-addlink(randrange(2**16),graphid[wordpair[0]],graphid[wordpair[1]],10)
+addlink(randrange(2**16),graphid[wordpair[0]],graphid[wordpair[1]],1)
 
+try:
+    level = Counter(json.loads(database[json.dumps(wordpair)]))
+except:
+    print "Pair not seen"
+    exit()
 
-level = Counter(json.loads(database[json.dumps(wordpair)]))
+level = topn(level)
 
 for rawword in level.keys():
     nid = randrange(2**16)
     word,size = getnameperc(rawword,level)
-    addnode(nid,word,size)
+    addnode(nid,word,size/2)
     graphid[rawword] = nid
-    addlink(randrange(2**16),graphid[wordpair[1]],graphid[rawword],size)
+    addlink(randrange(2**16),graphid[wordpair[1]],graphid[rawword],size*10)
 
 for word in level.keys():
     currwordpair = [wordpair[1],word]
-    currlevel = Counter(json.loads(database[json.dumps(currwordpair)]))
-    print currwordpair[1],currlevel
+    try:
+        currlevel = Counter(json.loads(database[json.dumps(currwordpair)]))
+    except:
+        currlevel = {}
+    currlevel = topn(currlevel)
     for rawsubword in currlevel.keys():
         nid = randrange(2**16)
         subword,size = getnameperc(rawsubword,currlevel)
-        addnode(nid,subword,size)
-        graphid[subword] = nid
-        print graphid
-        addlink(randrange(2**16),graphid[currwordpair[1]],graphid[rawsubword],size)
+        addnode(nid,subword,size/4)
+        graphid[rawsubword] = nid
+        addlink(randrange(2**16),graphid[currwordpair[1]],graphid[rawsubword],size*10)
