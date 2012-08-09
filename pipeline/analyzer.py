@@ -13,8 +13,8 @@ def analyzer(inqueue,outqueue,kill):
     #IMPORTANT data is in the format {(word1) : [consecutive, intweetcount]}
         tweet.single = defaultdict(lambda :[0,0]) 
         for word in tweet.consec: #get count of single words
-            if word != '<start>' and word != '<end>':
-                tweet.single[word][0] += 1
+            #if word != '<start>' and word != '<end>': #the  tags have to be in the tables otherwise things break
+            tweet.single[word][0] += 1
         for word in tweet.intweet:
             tweet.single[word][1] += 1
 
@@ -25,7 +25,7 @@ def analyzer(inqueue,outqueue,kill):
 
         for i in range(len(tweet.consec)-1): #get count of word pairs
             pair = tuple(tweet.consec[i:i+2])
-            if pair != ['<end>', '<start>']:
+            if pair != ('<end>', '<start>') and pair != ('<start>', '<end>'):
                 tweet.double[pair][0] += 1
         #make intweetdata
         wordpairs = combinations(tweet.intweet, 2) #all the unordered ways of picking two words from the tweet where word1 != word2
