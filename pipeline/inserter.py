@@ -29,22 +29,35 @@ def inserter(inqueue,kill):
         database = sqlite3.connect("../data.db")
         cursor = database.cursor()
         for word in tweets.singles:
-            query = "SELECT word FROM singles WHERE word == '%s' LIMIT 1" % word
-            cursor.execute(query)
+            try:
+                query = 'SELECT word FROM singles WHERE word == "%s" LIMIT 1' % word
+                cursor.execute(query)
+            except:
+                print "err'ed on: ", word
+                continue
             if not cursor.fetchone():
-                query = "INSERT INTO singles (word,count,uniquecount) VALUES ('%s', %d, %d)" % (word,tweets.singles[word][0], tweets.singles[word][1])
+                query = 'INSERT INTO singles (word,count,uniquecount) VALUES ("%s", %d, %d)' % (word,tweets.singles[word][0], tweets.singles[word][1])
             else:
-                query = "UPDATE singles SET count = count + %d, uniquecount = uniquecount + %d WHERE word = '%s'" % (tweets.singles[word][0],tweets.singles[word][1] ,word)
+                query = 'UPDATE singles SET count = count + %d, uniquecount = uniquecount + %d WHERE word = "%s"' % (tweets.singles[word][0],tweets.singles[word][1] ,word)
             cursor.execute(query)
         database.commit()
         for pair in tweets.doubles:
             word1,word2 = pair
             consecutive,intweet = tweets.doubles[pair]
-            query = "SELECT id FROM singles WHERE word == '%s' LIMIT 1"
+            query = 'SELECT id FROM singles WHERE word == "%s" LIMIT 1'
             cursor.execute(query % word1)
-            word1id = cursor.fetchone()[0]
+            try:
+                word1id = cursor.fetchone()[0]
+            except:
+                print "couldn't find in DB: ", word 
+                continue
+            
             cursor.execute(query % word2)
-            word2id = cursor.fetchone()[0]
+            try:
+                word2id = cursor.fetchone()[0]
+            except:
+                print "couldn't find in DB: ", word 
+                continue
             query = "SELECT word1id,word2id FROM doubles WHERE word1id == %d AND word2id == %d LIMIT 1"
             query = query % (word1id,word2id)
             cursor.execute(query)
