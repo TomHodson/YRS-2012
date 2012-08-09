@@ -7,7 +7,7 @@ node = """{"name":"%s","color":"#f00", "size": %d, "id":%d}"""
 link = """{"source":%d,"target":%d,"value":%d, "color":"#f00"}"""
 
 def getconnwords(wid, num):
-    query = "SELECT word2id,consecstrength FROM doubles WHERE consecutive > 0 AND word1id == %d ORDER BY consecstrength LIMIT %d" % (wid, num)
+    query = "SELECT word2id,consecstrength FROM doubles WHERE consecutive > 0 AND word1id == %d ORDER BY consecstrength LIMIT %d" % (int(wid), int(num))
     cursor.execute(query)
     return cursor.fetchall()
 
@@ -25,7 +25,6 @@ def consecutive(args):
     word = args['seed'][0]
     num = args['depth'][0]
 
-    print word, num
 
     cursor.execute("SELECT id,prob FROM singles WHERE word == '%s'" % word)
     try:
@@ -34,15 +33,15 @@ def consecutive(args):
     allnodes = []
     alllinks = []
     allwids = list(set(getconnwords(wid, num)))
-    allnodes.append(node % (word,prob,wid))
+    allnodes.append(node % (word,prob*1000,wid))
     for cwid,consec in allwids:
         if cwid == wid: continue
         word,count = getidcount(cwid)
-        cnode = node % (word.encode('ascii','ignore'), count,cwid)
+        cnode = node % (word.encode('ascii','ignore'), count*1000,cwid)
         allnodes.append(cnode)
     import math
     for cwid,consec in allwids:
-        clink = link % (0,getnodeindex(cwid,allnodes),consec)
+        clink = link % (0,getnodeindex(cwid,allnodes),consec*2)
         if clink not in alllinks: alllinks.append(clink)
     #allnodes = list(set(allnodes))
     alllinks = list(set(alllinks))

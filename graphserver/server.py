@@ -16,11 +16,9 @@ class JSON(resource.Resource):
         if request.args and request.path.endswith(".json"):
             try:
                 functionname = request.args["function"][0]
-                print repr(functionname), graphfunctions
                 function = graphfunctions[functionname]
-                print function
 
-                return "some output" + function(request.args)
+                return function(request.args)
             
             except KeyError as error: return "Unrecognised function", error
         else:

@@ -26,6 +26,10 @@
                     xmlhttpreq.open("GET","data.json"+window.location.search,false);
                     xmlhttpreq.send();
                     var data = JSON.parse(xmlhttpreq.responseText)
+                    if (Object.keys(data)[0] == "ERROR") {
+                        document.write("ERROR: "+data["ERROR"])
+                        return;
+                    }
                     g.Name = "YRS-2012";
                     
                     for (var i = 0; i < data.nodes.length; ++i){
@@ -58,7 +62,7 @@
                         communities = Viva.Graph.community().slpa(graph, 60, 0.30);
                     
                     var layout = Viva.Graph.Layout.forceDirected(graph, {
-                        springLength : 50,
+                        springLength : 75,
                         springCoeff : 0.00055,
                         dragCoeff : 0.09,
                         gravity : -1
