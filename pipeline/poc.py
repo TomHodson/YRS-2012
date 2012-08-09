@@ -6,12 +6,20 @@ from inserter import inserter
 from forker import forker
 from markov import markov
 from multiprocessing import Process,JoinableQueue,Value
-import signal
+import multiprocessing
+import time
 
-def cleanup(signal,frame):
+def cleanup():
     killProc = 1
+    time.sleep(3)
+    downloadert.terminate()
+    forkert.terminate()
+    markovt.terminate()
+    sanitisert.terminate()
+    analyzert.terminate()
+    insertert.terminate()
     
-signal.signal(signal.SIGINT,cleanup)
+    import sys;sys.exit()
 
 fromDownloadQueue = JoinableQueue()
 killProc = Value('d',0)
@@ -40,4 +48,6 @@ mergert.start()
 
 insertert = Process(target = inserter, args=(fromMergerQueue,killProc))
 insertert.start()
-insertert.join()
+
+raw_input("press any key to exit") #blocks
+cleanup()

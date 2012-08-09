@@ -16,21 +16,21 @@ def merger(inqueue,outqueue,kill):
         for _ in range(100):
             try:
                 tweet = inqueue.get(True)
-                
-                tweets.singles = defaultdict(lambda : [0, 0])
-                for wordpair in tweet.single:
-                    tweets.singles[wordpair][0] += tweet.single[wordpair][0]
-                    tweets.singles[wordpair][1] += tweet.single[wordpair][1]
-                tweets.singles = dict(tweets.singles)
-
-
-                tweets.doubles = defaultdict(lambda : [0, 0])
-                for wordpair in tweet.double:
-                    tweets.doubles[wordpair][0] += tweet.double[wordpair][0]
-                    tweets.doubles[wordpair][1] += tweet.double[wordpair][1]
-                tweets.doubles = dict(tweets.doubles)
             except IOError:
                 return
+                
+            tweets.singles = defaultdict(lambda : [0, 0])
+            for wordpair in tweet.single:
+                tweets.singles[wordpair][0] += tweet.single[wordpair][0]
+                tweets.singles[wordpair][1] += tweet.single[wordpair][1]
+            tweets.singles = dict(tweets.singles)
+
+
+            tweets.doubles = defaultdict(lambda : [0, 0])
+            for wordpair in tweet.double:
+                tweets.doubles[wordpair][0] += tweet.double[wordpair][0]
+                tweets.doubles[wordpair][1] += tweet.double[wordpair][1]
+            tweets.doubles = dict(tweets.doubles)
         outqueue.put(tweets)
 
 if __name__ == '__main__': #OUT OF DATE

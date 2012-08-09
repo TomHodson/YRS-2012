@@ -1,6 +1,7 @@
 import json
 import gdbm
 
+database = gdbm.open("../markov.db","csu")
 
 def gettriples(data):
     data = data.split()
@@ -19,12 +20,13 @@ def addtriple(triple):
         database[key] = json.dumps(data)
 
 def markov(inqueue,killProc):
-    with gdbm..open('../markov.db','cf') as database:
-        while not killProc == 1:
-            try:
-                tweet = inqueue.get(True)
-            except IOError:
-                return
-            tweetdata = tweet.raw
-            for triple in gettriples(tweetdata):
-                addtriple(triple)
+    while not killProc == 1:
+        try:
+            tweet = inqueue.get(True)
+        except IOError:
+            return
+        tweetdata = tweet.raw
+        for triple in gettriples(tweetdata):
+            addtriple(triple)
+    database.close()
+    
