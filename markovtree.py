@@ -3,10 +3,10 @@ import xmlrpclib
 import json
 from collections import Counter
 
-def addnode(nid,word,count):
+def addnode(nid,word,size):
     G.new_vertex_w_id(nid)
     G.set_vertex_attribute(nid,'label',word)
-    G.set_vertex_attribute(nid,'size',str(count))
+    G.set_vertex_attribute(nid,'size',str(size))
     G.set_vertex_attribute(nid,'fontcolor',"#ffffff")
 
 def addlink(eid,nid1,nid2,width):
