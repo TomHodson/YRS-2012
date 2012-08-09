@@ -7,7 +7,8 @@
 <div style="text-align: center;">
 <h1>Tweet Analyser</h1>
 <p>Select how many related words you would like</p>
-<select name="TweetAnalyserDropDown">
+<form action="/index.html" method="get">
+<select name="depth">
   <option value"2">2</option>
   <option value"3">3</option>
   <option value"4">4</option>
@@ -21,7 +22,6 @@
 <br />
 <br />
 <p1>Type in the word you wish to find related words for here.</p1>
-<form action=/ method="get">
   Word: <input type="text" name="word" /> <br />
   <input type="submit" value="Submit" />
 </form>

@@ -21,8 +21,9 @@
             function onLoad() {
                  var d3Sample = function(){
                     var g = Viva.Graph.graph();
+                    
                     xmlhttpreq = new XMLHttpRequest();
-                    xmlhttpreq.open("GET","data.json",false);
+                    xmlhttpreq.open("GET","data.json"+window.location.search,false);
                     xmlhttpreq.send();
                     var data = JSON.parse(xmlhttpreq.responseText)
                     g.Name = "YRS-2012";
