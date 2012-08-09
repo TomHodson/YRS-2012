@@ -11,28 +11,28 @@ def sanitiser(inqueue, outqueue, kill):
         tweet = " "  + tweetobj.raw.lower() + " "
 
         tweet = tweet.encode('ascii','ignore')
-        print "\nencode ascii: ", tweet
+        #print "\nencode ascii: ", tweet
 
         tweet = re.sub(r'[^\s]*[\@][^\s]*', ' ', tweet) #remove usernames and emails
-        print '\nremove usernames: ', tweet
+        #print '\nremove usernames: ', tweet
 
         tweet = re.sub(r'http://[^\s]*\s', ' ', tweet) #remove links
-        print '\nremove links: ', tweet
+        #print '\nremove links: ', tweet
 
         allowed = string.ascii_letters + "#.'" #remove anything not in allowed string
         tweet = re.sub(r"[^{allowed}]+".format(allowed = allowed)," ",tweet)
-        print '\nremove everything except allowed: ', tweet
+        #print '\nremove everything except allowed: ', tweet
 
         if not tweet: continue
         
         tweetobj.consec = re.sub(r"[\.]*[\s\.]*[\.]"," <end> <start> ", tweet) #should deal with elipsis and two full stops with some whitespace in between
         tweetobj.consec = ["<start>"]+tweetobj.consec.split()+["<end>"]
-        print "\nconsec with tags:", tweetobj.consec
+        #print "\nconsec with tags:", tweetobj.consec
 
         tweet = tweet.replace(".", " ")
-        print '\nreplace stops with spaces for intweet: ', tweet
+        #print '\nreplace stops with spaces for intweet: ', tweet
         tweetobj.intweet = set(tweet.split())
-        print '\n final intweet: ', tweetobj.intweet
+        #print '\n final intweet: ', tweetobj.intweet
 
         outqueue.put(tweetobj)
         inqueue.task_done()
