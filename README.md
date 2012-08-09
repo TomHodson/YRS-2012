@@ -60,5 +60,12 @@ Values computer by this step:
 
 
 
+We wanted to look at the statistical relationships between words in tweets, we wrote a multi-threaded miner to pull data from the twitter fire hose, perform analyses on and put the data into a database.
+
+Specifically, we're looking at how likely you are to see two words anywhere in the same tweet and how likely you are to see two words consecutively in the same tweet. For instance by calculating how likely you are to see 'usain' in a tweet containing 'olympics' and comparing that to how likely you are to see 'usain' in any tweet you can get a measure for how related these words are. You can also apply the same logic to pairs or triplets of consecutive words.
+
+We then wrote programs to visualize this data using networked graphs.
+
+
 
 

@@ -14,7 +14,8 @@ def postprocess():
 	#for that word divided by the total number of words
     total = cursor.execute("SELECT SUM(count) FROM singles").fetchone()[0]
     uniquetotal = cursor.execute("SELECT SUM(uniquecount) FROM singles").fetchone()[0]
-    cursor.execute("UPDATE singles SET prob = count / {}, uniqueprob = uniqueprob / {}".format(float(total), float(uniquetotal)))
+    print uniquetotal, total
+    cursor.execute("UPDATE singles SET prob = count / {}, uniqueprob = uniquecount / {}".format(float(total), float(uniquetotal)))
 
     print 'singles done'
     #loop through all the entries in the doubles table and there are four 
@@ -32,19 +33,19 @@ def postprocess():
     #consecstrength = consecprob / prob (0-1) of seeing word1 in any tweet 
     #(singles table)     
 
-    cursor.execute("SELECT id, word1id, intweet, consecutive FROM doubles ")
+    cursor.execute("SELECT id, word1id,word2id, intweet, consecutive FROM doubles ")
     for record in cursor.fetchall():
 
-        word1 = cursor.execute("SELECT count, prob FROM singles WHERE id == {}".format(record['word1id'])).fetchone()
+        tweetsum =  cursor.execute("SELECT count FROM tweetsum").fetchone()['count']
+        word1 = cursor.execute("SELECT * FROM singles WHERE id == {}".format(record['word1id'])).fetchone()
+        word2 = cursor.execute("SELECT * FROM singles WHERE id == {}".format(record['word2id'])).fetchone()
 
-        invcount = 1.0 / word1['count']#'count' and 'prob' are coming from the word1 record in the singles table
-        invprob = 1.0 /  word1['prob']
+        intweetprob = record['intweet'] / float(tweetsum)
+        intweetstrength = intweetprob / float(word2['uniqueprob'])
 
-        intweetprob = record['intweet'] * invcount #multipying by the inverse is the same as dividing but you only have to do 
-        intweetstrength = intweetprob * invprob    #the expensive division once
-
-        consecprob = record['consecutive'] * invcount
-        consecstrength = consecprob * invprob
+        consecprob = record['consecutive'] / float(word1['count'])
+        consecstrength = consecprob / float(word2['prob'])
+        print intweetprob, intweetstrength, consecprob, consecstrength
 
         updatequery = """UPDATE doubles
         SET intweetprob = {:.18},
