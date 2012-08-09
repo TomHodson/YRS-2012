@@ -32,9 +32,9 @@ def inserter(inqueue,kill):
             query = "SELECT word FROM singles WHERE word == '%s' LIMIT 1" % word
             cursor.execute(query)
             if not cursor.fetchone():
-                query = "INSERT INTO singles (word,count,unique) VALUES ('%s', %d, %d)" % (word,tweets.singles[word][0], tweets.singles[word][1])
+                query = "INSERT INTO singles (word,count,uniquecount) VALUES ('%s', %d, %d)" % (word,tweets.singles[word][0], tweets.singles[word][1])
             else:
-                query = "UPDATE singles SET count = count + %d, unique = unique + %d WHERE word = '%s'" % (tweets.singles[word][0],tweets.singles[word][1] ,word)
+                query = "UPDATE singles SET count = count + %d, uniquecount = uniquecount + %d WHERE word = '%s'" % (tweets.singles[word][0],tweets.singles[word][1] ,word)
             cursor.execute(query)
         database.commit()
         for pair in tweets.doubles:
