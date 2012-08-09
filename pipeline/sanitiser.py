@@ -8,25 +8,27 @@ def sanitiser(inqueue, outqueue, kill):
             tweetobj = inqueue.get(True)
         except IOError:
             return
-        tweet = tweetobj.raw
-        print tweet
-        tweet = re.sub("[(){}\[\].]","",tweet)
-        print tweet
-        tweet = re.sub("[%s]*[%s]+[%s]+" % (string.ascii_letters, punctuation, string.ascii_letters),"",tweet)
-        print tweet
-        tweet = re.sub("[%s]" % punctuation, "",tweet)
-        print tweet
-        tweet = re.sub(" +"," ",tweet)
-        print tweet
+        tweet = " "  + tweetobj.raw.lower() + " "
+        #print 'raw: ', tweet
+        tweet = re.sub(r'\s[^\s]*[\@][^\s]*\s', ' ', tweet) #remove usernames and emails
+        #print '\nremove usernames: ', tweet
+
+        allowed = string.ascii_letters + '#.' #remove anything not in allowed string
+        tweet = re.sub(r"[^{allowed}]+".format(allowed = allowed)," ",tweet)
+        #print '\nremove everything except allowed: ', tweet
+
         tweet = tweet.encode('ascii','ignore')
-        print tweet
+        #print "\nencode ascii: ", tweet
         if not tweet: continue
-        tweetobj.consec = tweet.lower()
-        #tweet = tweet.replace('.','')
-        tweetobj.body = tweet.lower().split()
-        tweetobj.intweet = set(tweetobj.body)
-        tweetobj.consec = tweetobj.consec.replace(".","<end> <start>").split()
-        tweetobj.consec = ["<start>"]+tweetobj.consec+["<end>"]
+        
+        tweetobj.consec = re.sub(r"[\.]+[\s\.]+[\.]"," <end> <start> ", tweet) #should deal with elipsis and two full stops with some whitespace in between
+        tweetobj.consec = ["<start>"]+tweetobj.consec.split()+["<end>"]
+        #print "\nconsec with tags:", tweetobj.consec
+
+        tweet = tweet.replace(".", " ")
+        #print '\nreplace stops with spaces for intweet: ', tweet
+        tweetobj.intweet = set(tweet.split())
+
         outqueue.put(tweetobj)
         inqueue.task_done()
 
@@ -37,7 +39,7 @@ if __name__ == '__main__':
     class Tweet:
         pass
     testtweet = Tweet()
-    testtweet.raw = "oh a tricky)((*()one <end> <?DF test.test"
+    testtweet.raw = "oh a tricky)((*()one @t_hodson #haShTag <end> <?DF one.two three .... four. .five thomas.c.hodson@gmail.com"
     inqueue = JoinableQueue()
     inqueue.put(testtweet)
     outqueue = JoinableQueue()
