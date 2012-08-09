@@ -40,12 +40,12 @@ def postprocess():
         word1 = cursor.execute("SELECT * FROM singles WHERE id == {}".format(record['word1id'])).fetchone()
         word2 = cursor.execute("SELECT * FROM singles WHERE id == {}".format(record['word2id'])).fetchone()
 
-        intweetprob = record['intweet'] / float(tweetsum)
-        intweetstrength = intweetprob / float(word2['uniqueprob'])
+        intweetprob = record['intweet'] / float(word1['uniquecount'])
+        intweetstrength = record['intweet'] / (float(word1['uniquecount']) * float(word1['uniquecount']))
 
         consecprob = record['consecutive'] / float(word1['count'])
         consecstrength = consecprob / float(word2['prob'])
-        print intweetprob, intweetstrength, consecprob, consecstrength
+        #print intweetprob, intweetstrength, consecprob, consecstrength
 
         updatequery = """UPDATE doubles
         SET intweetprob = {:.18},
