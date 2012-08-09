@@ -21,8 +21,10 @@ def analyzer(inqueue,outqueue,kill):
     #make doubles data
     #IMPORTANT data is in the format {(word1, word2) : [consecutive, intweetcount]}
         tweet.double = defaultdict(lambda :[0,0]) #initialise the double attribute
-        #make consecutive data    
-        for i in range(len(tweet.body)-1): #get count of word pairs
+        #make consecutive data
+        tagsadded = ['<start>'] + tweet.body + ['<end>'] 
+
+        for i in range(len(tagsadded)-1): #get count of word pairs
             pair = tuple(tweet.body[i:i+2])
             tweet.double[pair][0] += 1
         #make intweetdata
