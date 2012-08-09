@@ -11,9 +11,12 @@ def analyzer(inqueue,outqueue,kill):
         tweet.body #get tweet data
 
     #make singles data
-        tweet.single = Counter()
+    #IMPORTANT data is in the format {(word1) : [consecutive, intweetcount]}
+        tweet.single = defaultdict(lambda :[0,0]) 
         for word in tweet.body: #get count of single words
-            tweet.single[word] += 1
+            tweet.single[word][0] += 1
+        for word in set(tweet.body):
+            tweet.single[word][1] += 1
 
     #make doubles data
     #IMPORTANT data is in the format {(word1, word2) : [consecutive, intweetcount]}
@@ -27,14 +30,14 @@ def analyzer(inqueue,outqueue,kill):
         def f(x): 
             x = tuple(sorted(x))
             tweet.double[x][1] += 1
-        map(f, wordpairs) #using fp here for the lulz
+        map(f, wordpairs) 
             
         tweet.single = dict(tweet.single)
         tweet.double = dict(tweet.double)
         outqueue.put(tweet) #output to new queue
         inqueue.task_done()
 
-#yay for testing
+#yay for testing OUT OF DATE
 if __name__ == '__main__':
     import time
     from multiprocessing import Process

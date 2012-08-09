@@ -4,10 +4,10 @@ from twisted.web.static import File
 from consecutive import consecutive
 
 def dummy(request):
-    return "{}"
+	return "{}"
 
 
-graphfunctions = {'dummy' : dummy}
+graphfunctions = {'consec' : consecutive}
 
 class JSON(resource.Resource):
     isLeaf = True
@@ -28,8 +28,6 @@ class JSON(resource.Resource):
                 except IOError:
                     request.setResponseCode(404)
                     return 'Error'
-   	
-
 
 reactor.listenTCP(8000, server.Site(JSON()))
 reactor.run()
