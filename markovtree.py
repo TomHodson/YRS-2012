@@ -27,10 +27,10 @@ def addlink(parent,child,allchildren,root = False):
     else:
         width = 1
     G.new_edge_w_id(eid,getnodeid(parent),getnodeid(child))
-    #G.set_edge_attribute(eid,'spline','true')
     G.set_edge_attribute(eid,'oriented','true')
+    #G.set_edge_attribute(eid,'spline','true')
     G.set_edge_attribute(eid,'width',str(width))
-    G.set_edge_attribute(eid,'strength',"0.1")
+    G.set_edge_attribute(eid,'strength',"0.0")
 
 def getnameperc(word,level):
     perc = level[word]/float(sum(level.values()))
@@ -51,42 +51,8 @@ G.clear()
 database = gdbm.open("markov.db","r")
 
 wordpair = [u"in",u"the"]
-limit = 10
+limit = 3
 
-#for word in wordpair:
-#    wordid = randrange(2**16)
-#    addnode(wordid,word,2.5)
-#    graphid[word] = wordid
-#addlink(randrange(2**16),graphid[wordpair[0]],graphid[wordpair[1]],1)
-#
-#try:
-#    level = Counter(json.loads(database[json.dumps(wordpair)]))
-#except:
-#    print "Pair not seen"
-#    exit()
-#
-#level = topn(level)
-#
-#for rawword in level.keys():
-#    nid = randrange(2**16)
-#    word,size = getnameperc(rawword,level)
-#    addnode(nid,word,size/2)
-#    graphid[rawword] = nid
-#    addlink(randrange(2**16),graphid[wordpair[1]],graphid[rawword],size*10)
-#
-#for word in level.keys():
-#    currwordpair = [wordpair[1],word]
-#    try:
-#        currlevel = Counter(json.loads(database[json.dumps(currwordpair)]))
-#    except:
-#        currlevel = {}
-#    currlevel = topn(currlevel)
-#    for rawsubword in currlevel.keys():
-#        nid = randrange(2**16)
-#        subword,size = getnameperc(rawsubword,currlevel)
-#        addnode(nid,subword,size/4)
-#        graphid[rawsubword] = nid
-#        addlink(randrange(2**16),graphid[currwordpair[1]],graphid[rawsubword],size*10)
 def getchildren(wordpair):
     try:
         allchildren = Counter(json.loads(database[json.dumps(wordpair)]))
@@ -108,15 +74,6 @@ def recursion(wordpair,depth):
     for child in children:
         addnode(child,allchildren)
         addlink(wordpair[1],child,allchildren)
-    #for child in children: self((wordpair[1],child),depth-1)
     for child in children:
         recursion((wordpair[1],child),depth-1)
-recursion(wordpair,3)
-#have grandparent var
-#for i in parent, get wordpair
-#   get all children
-#   add all children
-#   connect all children
-#   add all children to list
-#   wordpair = nextwordpair
-#parent = childrenlist
+recursion(wordpair,4)
