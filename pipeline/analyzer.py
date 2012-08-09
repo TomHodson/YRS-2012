@@ -8,27 +8,25 @@ def analyzer(inqueue,outqueue,kill):
             tweet = inqueue.get(True) #read tweet object
         except IOError:
             return
-        tweet.body #get tweet data
 
     #make singles data
     #IMPORTANT data is in the format {(word1) : [consecutive, intweetcount]}
         tweet.single = defaultdict(lambda :[0,0]) 
-        for word in tweet.body: #get count of single words
+        for word in tweet.consec: #get count of single words
             tweet.single[word][0] += 1
-        for word in set(tweet.body):
+        for word in tweet.intweet:
             tweet.single[word][1] += 1
 
     #make doubles data
     #IMPORTANT data is in the format {(word1, word2) : [consecutive, intweetcount]}
         tweet.double = defaultdict(lambda :[0,0]) #initialise the double attribute
         #make consecutive data
-        tagsadded = ['<start>'] + tweet.body + ['<end>'] 
 
-        for i in range(len(tagsadded)-1): #get count of word pairs
-            pair = tuple(tweet.body[i:i+2])
+        for i in range(len(tweet.consec)-1): #get count of word pairs
+            pair = tuple(tweet.tweet.consec[i:i+2])
             tweet.double[pair][0] += 1
         #make intweetdata
-        wordpairs = combinations(set(tweet.body), 2) #all the unordered ways of picking two words from the tweet where word1 != word2
+        wordpairs = combinations(tweet.intweet, 2) #all the unordered ways of picking two words from the tweet where word1 != word2
         def f(x): 
             x = tuple(sorted(x))
             tweet.double[x][1] += 1
