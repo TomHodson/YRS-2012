@@ -53,7 +53,7 @@ except:
 level = topn(level)
 
 for rawword in level.keys():
-    nid = randrange(2**16)
+    nid = randrange(2**16) #HACK
     word,size = getnameperc(rawword,level)
     addnode(nid,word,size/2)
     graphid[rawword] = nid
