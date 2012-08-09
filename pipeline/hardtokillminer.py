@@ -23,6 +23,7 @@ def cleanup():
         kill(i.pid,SIGKILL)
 while True:
     try:
+        print 'tried'
         fromDownloadQueue = JoinableQueue()
         killProc = Value('d',0)
         toSanitiser = JoinableQueue()
@@ -50,10 +51,7 @@ while True:
 
         insertert = Process(target = inserter, args=(fromMergerQueue,killProc))
         insertert.start()
-
-        
-        while True:
-            sleep(100)
+        raw_input("press any key to exit\n") #blocks
     except:
+        print 'excepted'
         cleanup()
-        continue
