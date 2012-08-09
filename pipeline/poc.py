@@ -3,6 +3,8 @@ from sanitiser import sanitiser
 from analyzer import analyzer
 from merger import merger
 from inserter import inserter
+from splitter import splitter
+from markov import markov
 from multiprocessing import Process,JoinableQueue,Value
 import signal
 
@@ -20,8 +22,13 @@ fromMergerQueue = JoinableQueue()
 downloadert = Process(target = downloader, args=(fromDownloadQueue,killProc))
 downloadert.start()
 
-sanitisert = Process(target = sanitiser, args=(fromDownloadQueue,fromSanitiserQueue,killProc))
+splittert = Process(target = splitter, argc=(fromDownloadQueue,toSanitiser,toMarkov,killProc))
+splittert.start()
+
+sanitisert = Process(target = sanitiser, args=(toSanitiser,fromSanitiserQueue,killProc))
 sanitisert.start()
+markovt = Process(target = sanitiser, args=(toMarkov,killProc))
+markovt.start()
 
 analyzert = Process(target = analyzer, args=(fromSanitiserQueue,fromAnalyzerQueue,killProc))
 analyzert.start()
