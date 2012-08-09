@@ -10,18 +10,6 @@ def getconnwords(wid):
     cursor.execute(query+"' OR word2id == '".join(allwids)+"')")
     return cursor.fetchall()
 
-callbacked = []
-
-def vertex_callback(wid):
-    if wid not in callbacked:
-        for word in getconnwords(wid):
-            G.set_edge_attribute(word[0],'color','#ff0000')
-        callbacked.append(wid)
-    else:
-        for word in getconnwords(wid):
-            G.set_edge_attribute(word[0],'color','#000000')
-            callbacked.remove(wid)
-
 database = sqlite3.connect("../../../../YRS-2012/data.db")
 cursor = database.cursor()
 
@@ -34,7 +22,6 @@ for wid,word,count in rows:
     G.set_vertex_attribute(wid,'label',word)
     G.set_vertex_attribute(wid,'size',str(math.log(math.log(count))))
     G.set_vertex_attribute(wid,'fontcolor',"#ffffff")
-    G.set_vertex_attribute(wid,'callback_left_doubleclick',"http://127.0.0.1:20739/vertex_callback")
 
 for wid,word,count in rows:
     for i in getconnwords(wid):
@@ -43,8 +30,3 @@ for wid,word,count in rows:
         G.set_edge_attribute(i[0],'width',str(i[2]))
         G.set_edge_attribute(i[0],'strength',"0.0")
 
-from SimpleXMLRPCServer import SimpleXMLRPCServer
-server = SimpleXMLRPCServer(("localhost",20739),allow_none=True)
-server.register_introspection_functions()
-server.register_function(vertex_callback)
-server.serve_forever()
