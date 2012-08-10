@@ -13,6 +13,7 @@
 #   INSERT INTO doubles (word1id,word2id,intweet,consecutive) VALUES (%d, %d, %d, %d)
 #   UPDATE doubles SET intweet = intweet + %d, consecutive = consecutive + %d WHERE word1id == %d AND WHERE word2id == %d
 import sqlite3
+from time import time
 
 def inserter(inqueue,kill):
     """Takes a Tweets object and runs the necessary MySQL queries to enter
@@ -46,12 +47,12 @@ def inserter(inqueue,kill):
             consecutive,intweet = tweets.doubles[pair]
             query = 'SELECT id FROM singles WHERE word == "%s" LIMIT 1'
             cursor.execute(query % word1)
+            print query % word1
             try:
                 word1id = cursor.fetchone()[0]
             except:
                 print "couldn't find in DB: ", word 
                 continue
-            
             cursor.execute(query % word2)
             try:
                 word2id = cursor.fetchone()[0]
@@ -82,7 +83,8 @@ def inserter(inqueue,kill):
             try:
                 cursor.execute(query)
             except:
+                print "doubles fail"
                 pass
-        cursor.execute("UPDATE tweetsum SET count = count + 100 WHERE id = 1")
+        cursor.execute("UPDATE tweetsum SET count = count + 10 WHERE id = 1")
         database.commit()
-        print "100 down"
+        print "10 down"

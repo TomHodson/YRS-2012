@@ -19,7 +19,7 @@ def sanitiser(inqueue, outqueue, kill):
         tweet = re.sub(r'http://[^\s]*\s', ' ', tweet) #remove links
         #print '\nremove links: ', tweet
 
-        allowed = string.ascii_letters + "#.'" #remove anything not in allowed string
+        allowed = string.ascii_letters + "#." #remove anything not in allowed string
         tweet = re.sub(r"[^{allowed}]+".format(allowed = allowed)," ",tweet)
         #print '\nremove everything except allowed: ', tweet
 

@@ -14,7 +14,7 @@ def merger(inqueue,outqueue,kill):
         tweets = Tweets()
         tweets.singles = defaultdict(lambda : [0, 0])
         tweets.doubles = defaultdict(lambda : [0, 0])
-        for _ in range(100):
+        for _ in range(10):
             try:
                 tweet = inqueue.get(True)
             except IOError:
